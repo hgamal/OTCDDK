@@ -8,6 +8,31 @@
 
 	# udevadm control --reload-rules && udevadm trigger
 ```
+# tcddk-ctl
+
+## help
+```
+[hgamal@ygamal tcddk-ctl]$ ./tcddk-ctl 
+usage: ./tcddk-ctl [list|monitor|reset|set_debug|upload_dsp]
+```
+
+## monitor
+```
+[hgamal@ygamal tcddk-ctl]$ ./tcddk-ctl monitor
+0024r: p0=000, p1=000, p2=000, p3=000, p4=000, p5=000, s0=0, s1=0, tb=0, bb=0, gl=0, rl=0, dbg0=000000, dbg1=000000, dbg2=000000, dbg3=000000
+```
+
+- p0-p6: Potentiometer positions - values from 0 to 255
+
+- s0-s1: Switches - values from 0, 1 and 2 (left, mid rigth)
+
+- tb-bb: Top and Botton Switches - values 0 and 1
+
+- gl-rl: Leds (green and red) - values 0 and 1
+
+- dbg0 - dbg1: debug variables 24 bit resolution
+
+
 # USB Vendor calls
 
 
