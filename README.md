@@ -1,6 +1,6 @@
 # OTCDDK
 
-*udev
+# udev configuration unde linux
 
 	# cat /etc/udev/rules.d/27-line6.rules
 	#TCDDK
@@ -8,36 +8,36 @@
 
 	udevadm control --reload-rules && udevadm trigger
 
-*USB Vendor calls
+# USB Vendor calls
 
-Version ???
+
+## Version ???
 	bmRequestType: 0xc0, bRequest: 67, wValue: 0x0000, wIndex: 0 (0x0000), wLength: 6
 	
 	c0:00:cf:ff:06:00
 
-Set debug variables to 800001800002800003800004
+## Set debug variables to 800001800002800003800004
 	bmRequestType: 0x40, bRequest: 65, wValue: 0x0000, wIndex: 0 (0x0000), wLength: 12, Data Fragment: 800001800002800003800004
 
-Enable Write - Erase ???
+## Enable Write - Erase ???
 	bmRequestType: 0x40, bRequest: 99, wValue: 0xc000, wIndex: (c000, c200, c400, c600, c800, ca00, cc00, ce00) wLength: 1, Data Fragment: 00
 		01
 
 		??? Program Status after ???
 
-Status ???
+## Status ???
 	bmRequestType: 0xc0, bRequest: 105, wValue: 0x0000, wIndex: 0 (0x0000), wLength: 1
 		01
 
-Program bytes
+## Program bytes
 	bmRequestType: 0x40, bRequest: 97, wValue: start, wIndex: end, wLength: len, Data Fragment: bytes to program
 		01
 
-Reset - Reboot DSP
+## Reset - Reboot DSP
 	bmRequestType: 0xc0, bRequest: 66, wValue: 0xdbdb, wIndex: 0 (0x0000), wLength: 1
 		01
 
-
-Read Status from DSP
+## Read Status from DSP
 	bmRequestType: 0xc0, bRequest: 64, wValue: 0x0000, wIndex: 0 (0x0000), wLength: 24
 
 	00 00 00 00 00 00 00 00 00 00 00 00 01 07 89 01 07 89 7F FF FF 7F FF
@@ -46,7 +46,7 @@ Read Status from DSP
 	01: Pot 1
 	02: Por 2
 
-*Upload life cycle
+# Upload life cycle
 
 Inicio:
 	Frame 11211: 65 bytes on wire (520 bits), 65 bytes captured (520 bits) on interface 0	- 0xc000
