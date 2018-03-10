@@ -77,7 +77,7 @@ Inicio:
 
 	Frame 11775: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) on interface 0	- Reset
 
-
+```
 Mar  6 23:41:53 ygamal kernel: usb 8-2: new full-speed USB device number 2 using xhci_hcd
 Mar  6 23:41:53 ygamal kernel: usb 8-2: New USB device found, idVendor=0e41, idProduct=4154
 Mar  6 23:41:53 ygamal kernel: usb 8-2: New USB device strings: Mfr=1, Product=1, SerialNumber=1
@@ -151,4 +151,4 @@ Device Status:     0x0040
 
 
 usb.addr == "8.2.0" && usb.bmRequestType != 0xc0
-
+```
