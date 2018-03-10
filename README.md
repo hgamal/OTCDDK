@@ -1,13 +1,13 @@
 # OTCDDK
 
 # udev configuration unde linux
-
+```
 	# cat /etc/udev/rules.d/27-line6.rules
 	#TCDDK
 	SUBSYSTEM=="usb", ACTION=="add", ATTR{idVendor}=="0e41", ATTR{idProduct}=="4154", SYMLINK+="tcddk-%k", GROUP="line6"
 
-	udevadm control --reload-rules && udevadm trigger
-
+	# udevadm control --reload-rules && udevadm trigger
+```
 # USB Vendor calls
 
 
