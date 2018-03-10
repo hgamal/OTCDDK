@@ -1,0 +1,2 @@
+#TCDDK
+SUBSYSTEM=="usb", ACTION=="add", ATTR{idVendor}=="0e41", ATTR{idProduct}=="4154", SYMLINK+="tcddk-%k", GROUP="line6"
