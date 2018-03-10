@@ -1,0 +1,31 @@
+# TCDDK example
+
+.SUFFIXES: .cln .asm
+
+OBJS=$(SOURCES:.asm=.cln)
+LSTS=$(SOURCES:.asm=.lst)
+
+export BPATH = ../../bin/
+
+TARGET ?= $(PROJ)-DSPCode.c
+
+.asm.cln:
+	$(BPATH)asm56300.exe -G -L$(basename $@).lst -B$@ $<
+
+all:	$(TARGET)
+
+clean:
+	-rm $(OBJS)
+	-rm $(LSTS)
+	-rm $(PROJ).cld
+	-rm $(PROJ).s
+	-rm $(PROJ)-DSPCode.c
+
+$(PROJ).cld:	$(OBJS)
+	$(BPATH)dsplnk.exe   -G -B"$(PROJ).cld" $^
+
+$(PROJ).s:	$(PROJ).cld
+	$(BPATH)srec.exe -r -s $<
+
+$(PROJ)-DSPCode.c:	$(PROJ).s
+	$(BPATH)create_dsp_code $< $@
