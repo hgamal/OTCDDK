@@ -1,4 +1,7 @@
-total 4660
+Those files must be taken from Symphony Studio and placed here.
+
+On linux all those files run under wine. 
+
 -rwxr--r-- 1 hgamal hgamal  172032 Mar 10 16:38 alo563.exe
 -rwxr--r-- 1 hgamal hgamal   73728 Mar 10 16:38 annotate.exe
 -rwxr--r-- 1 hgamal hgamal  479232 Mar 10 16:38 asm56300.exe
