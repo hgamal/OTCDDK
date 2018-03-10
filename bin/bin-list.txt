@@ -1,0 +1,20 @@
+total 4660
+-rwxr--r-- 1 hgamal hgamal  172032 Mar 10 16:38 alo563.exe
+-rwxr--r-- 1 hgamal hgamal   73728 Mar 10 16:38 annotate.exe
+-rwxr--r-- 1 hgamal hgamal  479232 Mar 10 16:38 asm56300.exe
+-rwxr--r-- 1 hgamal hgamal   45056 Mar 10 16:38 cldinfo.exe
+-rwxr--r-- 1 hgamal hgamal   57344 Mar 10 16:38 cldlod.exe
+-rwxr--r-- 1 hgamal hgamal   77824 Mar 10 16:38 cofdmp.exe
+-rwxr--r-- 1 hgamal hgamal   73728 Mar 10 16:38 dsplib.exe
+-rwxr--r-- 1 hgamal hgamal  311296 Mar 10 16:38 dsplnk.exe
+-rwxr--r-- 1 hgamal hgamal 1134592 Mar 10 16:38 g563-cc1.exe
+-rwxr--r-- 1 hgamal hgamal   94208 Mar 10 16:38 g563c.exe
+-rwxr--r-- 1 hgamal hgamal  898048 Mar 10 16:38 libiconv2.dll
+-rwxr--r-- 1 hgamal hgamal  103424 Mar 10 16:38 libintl3.dll
+-rwxr--r-- 1 hgamal hgamal  643072 Mar 10 16:38 lint563.exe
+-rwxr--r-- 1 hgamal hgamal  175104 Mar 10 16:38 make.exe
+-rwxr--r-- 1 hgamal hgamal  143360 Mar 10 16:38 mcpp.exe
+-rwxr--r-- 1 hgamal hgamal  109056 Mar 10 16:38 rm.exe
+-rwxr--r-- 1 hgamal hgamal   69632 Mar 10 16:38 srec.exe
+-rwxr--r-- 1 hgamal hgamal   49152 Mar 10 16:38 strip.exe
+-rwxr--r-- 1 hgamal hgamal   49152 Mar 10 16:38 tiohist.exe
