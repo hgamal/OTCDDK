@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 HEX_SRC=${1/.cld/.hex}
 S_SRC=${1/.cld/.s}
