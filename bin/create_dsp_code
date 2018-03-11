@@ -1,0 +1,43 @@
+#!/bin/sh
+
+dos2unix < $1 | sed -e 's/^S1......//' -e 's/..$//' -e 's/^S[09].*$//' -e 's/../0x&, /g' > $1.tmp
+cat <<-EOF > $2
+	#include "typedef.h"
+	
+	/*
+	    This is the code that will be downloaded to the DSP.
+	    You can modify this constant based on the dumped file displayed by the GUI.
+	    Make sure you change the code size (first 3 bytes in the array)
+	*/
+	
+	const UINT8 DSP_Code[] @ 0xC000 = {
+EOF
+
+export SIZE=`wc -w $1.tmp | awk '{ print $1; }'`
+SIZE=$((SIZE / 3))
+
+printf "    0x%02X, 0x%02X, 0x%02X," $(($SIZE / 65536)) \
+	$(($SIZE % 65536 / 256)) $(($SIZE % 256))				>> $2 
+
+echo '    /* This is the size of the code in words*/'				>> $2
+
+echo -n "    0x00, 0x00, 0x00,"							>> $2
+
+echo '    /* This is the starting address of RAM where the code will be stored */'	>> $2
+
+cat <<-EOF >> $2
+
+	    /*
+	       This is the compiled and dumped code. You can use the GUI to obtain this array of bytes.
+	       Be sure to paste numbers as bytes, and to modify the size of the code based on what is displayed on the GUI
+	    */
+
+EOF
+
+cat $1.tmp >> $2
+rm $1.tmp 
+
+cat <<-EOF >> $2
+	
+	};
+EOF
