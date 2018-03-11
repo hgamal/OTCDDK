@@ -10,6 +10,10 @@
 ```
 # tcddk-ctl
 
+# libusb windows
+Download libraries and sources from
+	http://libusb.info/
+
 ## help
 ```
 [hgamal@ygamal tcddk-ctl]$ ./tcddk-ctl 
