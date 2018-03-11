@@ -1,6 +1,33 @@
 # OTCDDK
+OTCDDK means "Other Tone Core DSP Development Kit". It was enginered in order to permit develop DSP algorithms in other platforms such linux or Windows.
 
-# udev configuration unde linux
+# Running on Windows
+1. install git
+2. download "make" from "https://sourceforge.net/projects/ezwinports/files/"
+3. install "make"  - downloaded above - into git mingw directory (mine is under C:\Program Files\Git\mingw32)
+4. clone https://github.com/hgamal/OTCDDK.git
+5. start git bash session under cloned directory
+6. in order to compile DSP codes, yum may use one of two alternatives: 
+   1. the PATH must point to all Symphony Sassembler and tools; or
+   2. copy all files described under "bin/bin-list.txt" from original Symphony Studio Directories to "bin" directory. (mine is placed under C:\Symphony-Studio\dsp56720-devtools\dist\gcc\bin)
+7. to do tasks:
+   1. compile example dsp code: cd dsp-code/
+```
+	$ cd dsp-code/TwoBandStereoEQ
+	$ make
+```
+   2. upload code to DSP
+```
+	$ ./bin/cld2hex cld-exemples/TwoBandStereoEQ.cld
+	$ ./bin/tcddk-ctl upload_dsp cld-exemples/TwoBandStereoEQ.hex
+```
+    3. monitor DSP running (pots and switches)
+```
+	$ ./bin/tcddk-ctl monitor
+```
+    4. to upload code to mcu - not available yet
+
+# udev configuration on linux
 ```
 	# cat /etc/udev/rules.d/27-line6.rules
 	#TCDDK
