@@ -19,6 +19,13 @@
 
 #pragma once
 
+#define TCDDK_ERROR_ERASE_BLOCK					-1
+#define TCDDK_ERROR_ERASE_BLOCK_STATUS			-2
+#define TCDDK_ERROR_TRANSFER_BLOCK				-3
+#define TCDDK_ERROR_TRANSFER_BLOCK_STATUS		-4
+#define TCDDK_ERROR_CHKSUM						-5
+
+
 struct uint24 {
 	uint8_t high;
 	uint8_t mid;
@@ -67,6 +74,5 @@ struct TcddkStatus {
 
 /** Line6 TCDDK USB API **/
 int TCDDK_readStatus(libusb_device_handle *dev, uint8_t *buffer);
-int TCDDK_resetPedal(libusb_device_handle *dev, uint8_t *status);
 int TCDDK_setDebugVars(libusb_device_handle *dev, uint32_t *values);
 int TCDDK_uploadBuffer(libusb_device_handle *dev, uint8_t *buffer, int size, uint16_t startAddress);

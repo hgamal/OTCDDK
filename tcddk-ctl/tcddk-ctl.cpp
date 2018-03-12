@@ -94,14 +94,6 @@ void monitorPedal(libusb_device_handle *dev_handle)
 		putchar('\n');
 }
 
-void resetPedal(libusb_device_handle *dev_handle)
-{
-		unsigned char status;
-
-		int rc = TCDDK_resetPedal(dev_handle, &status);
-		printf("reset rc=%d, ret_code=%x\n", rc, status);
-}
-
 void setDebugVars(libusb_device_handle *dev_handle, uint32_t *values)
 {
 	int rc = TCDDK_setDebugVars(dev_handle, values);
@@ -139,9 +131,12 @@ static uint8_t *readHexFile(const char *file, int *size, uint16_t addr)
 		}
 	}
 
-	debug("Code size=%d, %d words", (*size), (*size)/3);
+	uint16_t sum = 0;
+	for (int i=6; i<(*size); i++)
+		sum += outputBuffer[i];
 
 	uint32_t nwords = (*size)/3;
+	printf("Upload size=%d (%d words)\nUpload Checksum=%04x\n", (*size), nwords, sum);
 
 	outputBuffer[0] = (nwords >> 16) & 0xff;
 	outputBuffer[1] = (nwords >> 8) & 0xff;
@@ -152,18 +147,11 @@ static uint8_t *readHexFile(const char *file, int *size, uint16_t addr)
 
 	(*size) += 6;
 
-	debug("Upload size=%d", (*size));
-/*
-	for (int i=0; i<(*size); i++) {
-		if (i % 16 == 0)
-			printf("\nvalue [%04x] = %02x", addr, outputBuffer[i]);
-		else
-			printf(" %02x", outputBuffer[i]);
-		addr++;
-	}
+	for (int i=0; i<(*size); i++)
+		sum += outputBuffer[i];
 
-	printf("\n");
-*/
+	printf("Upload size=%d\nUpload Checksum=%0x4\n", (*size), sum);
+
 	fclose(fp);
 
 	return outputBuffer;
@@ -176,5 +164,31 @@ void programDSP(libusb_device_handle *dev, const char *file, uint16_t startAddre
 	uint8_t *buffer = readHexFile(file, &size, startAddress);
 
 	int rc = TCDDK_uploadBuffer(dev, buffer, size, startAddress);
-	printf("upload rc=%d\n", rc);
+	debug("upload rc=%d", rc);
+	if (rc < 0) {
+		switch(rc) {
+		case TCDDK_ERROR_ERASE_BLOCK:
+			error("erasing memory block");
+			break;
+
+		case TCDDK_ERROR_ERASE_BLOCK_STATUS:
+			error("erasing memory block (getting status)");
+			break;
+
+		case TCDDK_ERROR_TRANSFER_BLOCK:
+			error("transfering memory block");
+			break;
+
+		case TCDDK_ERROR_TRANSFER_BLOCK_STATUS:
+			error("Error transfering memory block (getting status)");
+			break;
+
+		case TCDDK_ERROR_CHKSUM:
+			error("Checksum error ");
+			break;
+		}
+		return;
+	}
+
+	printf("%d bytes transfered\n", rc);
 }

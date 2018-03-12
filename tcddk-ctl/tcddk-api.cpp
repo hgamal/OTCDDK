@@ -41,13 +41,6 @@ int TCDDK_readStatus(libusb_device_handle *dev, uint8_t *buffer)
 	return rc;
 }
 
-int TCDDK_resetPedal(libusb_device_handle *dev, uint8_t *status)
-{
-	printf("sizeof=%ld\n", sizeof(*status));
-	int rc = libusb_control_transfer(dev, 0xc0, 66, 0xdbdb, 0, status, sizeof(*status), 0);
-	return rc;	
-}
-
 int TCDDK_setDebugVars(libusb_device_handle *dev, uint32_t values[4])
 {
 	unsigned char buffer[12];
@@ -68,6 +61,27 @@ int TCDDK_uploadBuffer(libusb_device_handle *dev, uint8_t *buffer, int size, uin
 	uint8_t status;
 	uint16_t sum=0;
 
+	// erase blocks
+	for (uint16_t x=0xc000; x<0xcf00; x+=0x200) {
+		uint8_t data = 0;
+		rc = libusb_control_transfer(dev, 0x40, 99, x, 0, &data, sizeof(data), 0);
+#ifdef _DEBUG
+		printf("zero: addr=%04x, rc=%d\n", x, rc);
+#endif
+		if (rc != 1)
+			return TCDDK_ERROR_ERASE_BLOCK;
+
+		// Get Status
+		rc = libusb_control_transfer(dev, 0xc0, 105, 0x0000, 0, &status, sizeof(status), 0);
+#ifdef _DEBUG
+		printf("zero: status: rc=%d, status=%d\n", rc, status);
+#endif
+
+		if (rc != 1 && status != 1)
+			return TCDDK_ERROR_ERASE_BLOCK_STATUS;
+	}
+
+	// program data
 	while (count) {
 		int chunkSize = count > 8 ? 8 : count;
 		uint16_t addrInit = startAddress;
@@ -79,13 +93,24 @@ int TCDDK_uploadBuffer(libusb_device_handle *dev, uint8_t *buffer, int size, uin
 
 		// Send buffer
 		rc = libusb_control_transfer(dev, 0x40, 97, addrInit, addrEnd, p, chunkSize, 0);
+#ifdef _DEBUG
 		printf("upload: addr=%04x, end=%04x, chunk size=%d, rc=%d,", addrInit, addrEnd, chunkSize, rc);
+#endif
+		if (rc != chunkSize)
+			return TCDDK_ERROR_TRANSFER_BLOCK;
+
+#ifdef _DEBUG
 		for (int i=0; i<chunkSize; i++)
 			printf(" %02x", p[i]);
+#endif
 
 		// Get Status
 		rc = libusb_control_transfer(dev, 0xc0, 105, 0x0000, 0, &status, sizeof(status), 0);
+#ifdef _DEBUG
 		printf(", status: rc=%d, status=%d\n", rc, status);
+#endif
+		if (rc != 1 && status != 1)
+			return TCDDK_ERROR_TRANSFER_BLOCK_STATUS;
 
 		p += chunkSize;
 		count -= chunkSize;
@@ -93,10 +118,18 @@ int TCDDK_uploadBuffer(libusb_device_handle *dev, uint8_t *buffer, int size, uin
 		startAddress += chunkSize;
 	}
 
+#ifdef _DEBUG
 	printf("Code sum=%d, %x\n", sum, sum);
+#endif
 
+	// verify checksum and reset
 	rc = libusb_control_transfer(dev, 0xc0, 66, sum, 0, &status, sizeof(status), 0);
+#ifdef _DEBUG
 	printf("Upload status: rc=%d, status=%d\n", rc, status);
+#endif
+
+	if (rc != 1 && status != 1)
+		return TCDDK_ERROR_CHKSUM;
 
 	return rc_count;	
 }

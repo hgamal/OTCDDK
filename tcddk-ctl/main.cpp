@@ -30,6 +30,7 @@
 
 void debug(const char *fmt, ...)
 {
+#ifdef _DEBUG
 	va_list va;
 	va_start(va, fmt);
 
@@ -39,13 +40,15 @@ void debug(const char *fmt, ...)
 	va_end(va);
 
 	putchar('\n');
-
+#endif
 }
 
 void error(const char *fmt, ...)
 {
 	va_list va;
 	va_start(va, fmt);
+
+	printf("Error: ");
 
 	vfprintf(stderr, fmt, va);
 	va_end(va);
@@ -55,7 +58,7 @@ void error(const char *fmt, ...)
 
 void usage(const char *pgm)
 {
-	printf("usage: %s [list|monitor|reset|set_debug|upload_dsp]\n", pgm);
+	printf("usage: %s [list|monitor|set_debug|upload_dsp]\n", pgm);
 	exit(0);
 }
 
@@ -158,8 +161,6 @@ int main(int ac, char **av)
 		listDevices(ctx);
 	else if (ac > 1 && strcmp(av[1], "monitor") == 0)
 		monitorPedal(dev_handle);
-	else if (ac > 1 && strcmp(av[1], "reset") == 0)
-		resetPedal(dev_handle);
 	else if (ac > 5 && strcmp(av[1], "set_debug") == 0) {
 		uint32_t values[4];
 		for (int i=0; i<4; i++)
