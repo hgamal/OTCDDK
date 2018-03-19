@@ -64,6 +64,18 @@ It is needed in order to compile tcddk-ctl.
 Download libraries and sources from
 	http://libusb.info/
 
+## Installing WinUSB
+In order to make tcddk-ctl work, the Tone COre Developer Line6 Interface must to be associated to Microsoft Winusb.sys. 
+The follow these instructions to load the driver:
+
+1. Plug in your device to the host system
+2. Open Device Manager and locate the device
+3. Right-click the device and select "Update driver software"
+4. from the context menu. In the wizard, select "Browse my computer" for driver software
+5. Select "Let me pick from a list of device drivers on my computer"
+6. From the list of device classes, select "Universal Serial Bus devices"
+7. The wizard displays WinUsb Device. Select it to load the driver.
+	
 # USB Vendor calls
 
 ## Get Version ?
