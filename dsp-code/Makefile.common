@@ -6,6 +6,7 @@ OBJS=$(SOURCES:.asm=.cln)
 LSTS=$(SOURCES:.asm=.lst)
 
 export BPATH = "../../bin/"
+export WINEDEBUG = -all
 
 TARGET ?= $(PROJ)-DSPCode.c
 
