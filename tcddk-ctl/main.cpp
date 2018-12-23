@@ -22,7 +22,9 @@
 #include <string.h>
 #include <stdarg.h>
 
+#ifndef __GNUC__
 #pragma warning(disable:4200)
+#endif
 #include <libusb-1.0/libusb.h>
 
 #include "main.h"
@@ -138,7 +140,7 @@ void listDevices(libusb_context *ctx)
 
 int main(int ac, char **av)
 {
-	if (ac == 0)
+	if (ac == 1)
 		usage(av[0]);
 
 	libusb_context *ctx = NULL;
