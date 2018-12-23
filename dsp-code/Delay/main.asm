@@ -66,14 +66,18 @@ LeftInput               ds  1       ; 0x00
 LeftOutput              ds  1       ; 0x01
 RightInput              ds  1       ; 0x02
 RightOutput             ds  1       ; 0x03
-delayReadL              ds  1       ; 0x05
-delayWriteL             ds  1       ; 0x06
+Chan0IO                 ds  1       ; 0x05
+Chan1IO                 ds  1       ; 0x06
+DelayPotValue           ds  1       ; 0x07
+DelaySize               ds  1       ; 0x08
+efil                    ds  1       ; 0x09
+pacc                    ds  1       ; 0x0a
 
-BufferSize      equ     40000
+BufferSize      equ     120000
 
 	org		y:$200000
 
-Buffer	dsm	(BufferSize)
+DelayBuffer	dsm	(BufferSize*3)
 
 ;**************************************************************************
 
@@ -234,12 +238,12 @@ START
         movep   #$000007,x:M_IPRP       ; ESAI int's enabled and top Priority
                                         ; SHI int's enabled and lowest Priority.
 
+        jsr     setup                   ; Init DMA
+
         andi    #$FC,mr                 ;enable all interrupt levels
                                         ;clear scaling bits
 
         movep   #>$000002,x:M_PDRC      ; Take CODEC out of power down mode.
-
-        jsr     InitDMA                 ; Init DMA
 
 ;------------------------------------------------------------
 ; Main loop
@@ -274,7 +278,7 @@ DoWriteCommand
         jclr    #M_HRNE,x:M_HCSR,*      ; Wait for data 
         movep   x:M_HRX,x:(r5)          ; Write data.
         movep   #000000,x:M_HTX         ; Assert HREQ* pin for 8031.
-		rti
+	rti
 
 DoReadCommand
         jclr    #M_HRNE,x:M_HCSR,*
@@ -288,7 +292,7 @@ DoReadCommand
         jclr    #M_HRNE,x:M_HCSR,*
         movep   x:M_HRX,n5
         movep   #>000000,x:<<M_HTX
-		rti
+	rti
 
 
 ;-----------------------------
@@ -336,19 +340,21 @@ esai_rxeven_isr
     
     ;Process Left Channel   (left input sample is in a)        
         move    y:LeftInput,a
-        bsr     DelayL                  ; input in a, output in a
+        bsr     ComputeSampleL           ; input in a, output in a
         move    a,y:LeftOutput
 
     ;Process Right Channel
     ; copy LeftOutput
+        move    y:RightInput,a
+        bsr     ComputeSampleR           ; input in a, output in a
         move    a,y:RightOutput
        
     ;Note: r5 and n5 are currently reserved for Host Interrupts
 
     ;Use Bottom layer of FootSwitch to turn on/off analog bypass
     ;   take the momentary footswitch signal (pulse) and generate a latched (step) control signal
-        move    x:FootSwitch_BottomLayer,a      ; load unmodified footswitch input
-        move    x:FootSwitch_BottomLayer,x1     ; load unmodified footswitch input 
+        move    x:FootSwitch_TopLayer,a         ; load unmodified footswitch input
+        move    x:FootSwitch_TopLayer,x1        ; load unmodified footswitch input 
         not     a       x:FootLatchMem,x0       ; not a  (also, load the previous momentary signal into x0)
         and     x0,a    x1,x:FootLatchMem       ; x0 & a (also, store current momentary signal for next iteration)
         move    x:FootLatch,x0                  ; load previous latched value
@@ -388,51 +394,91 @@ END_ANALOG_BYPASS:
 AccessSRAMWord0 equ $982245 ; 1 0 011 00 0 00100 0 100100 01 01
         ; DMA Control Register for channel 0
         ; bit(s)value description
-        ; [23] = DE = 1 DMA Operation enabled (Trigger DMA transfer)
-        ; [22] = DIE = 0 DMA Interrupt disabled
+        ; [23]    = DE       = 1 DMA Operation enabled (Trigger DMA transfer)
+        ; [22]    = DIE      = 0 DMA Interrupt disabled
         ; [21:19] = DTM[2:0] = 011 triggered by DE, DE=0 after done
         ; [18:17] = DPR[1:0] = 00 priority level 0
-        ; [16] = DCON = 0 Continuous mode disabled
+        ; [16]    = DCON     = 0 Continuous mode disabled
         ; [15:11] = DRS[4:0] = 00100 Transfer done from channel 0
-        ; [10] = D3D = 0 non 3-d mode
-        ; [9:4] = DAM[5:0] = 100100 no update s/d
-        ; [3:2] = DDS[1:0] = 01 Y memory destination
-        ; [1:0] = DSS[1:0] = 01 Y memory source
+        ; [10]    = D3D      = 0 non 3-d mode
+        ; [9:4]   = DAM[5:0] = 100100 no update s/d
+        ; [3:2]   = DDS[1:0] = 01 Y memory destination
+        ; [1:0]   = DSS[1:0] = 01 Y memory source
 
 AccessSRAMWord1	equ $982A45 ; 1 0 011 00 0 00101 0 100100 01 01
-        ; DMA Control Register for channel 0
+        ; DMA Control Register for channel 1
         ; bit(s)value description
-        ; [23] = DE = 1 DMA Operation disabled (Trigger DMA transfer)
-        ; [22] = DIE = 0 DMA Interrupt disabled
+        ; [23]    = DE       = 1 DMA Operation enabled (Trigger DMA transfer)
+        ; [22]    = DIE      = 0 DMA Interrupt disabled
         ; [21:19] = DTM[2:0] = 011 triggered by DE, DE=0 after done
         ; [18:17] = DPR[1:0] = 00 priority level 0
-        ; [16] = DCON = 0 Continuous mode disabled
+        ; [16]    = DCON     = 0 Continuous mode disabled
         ; [15:11] = DRS[4:0] = 00101 Transfer done from channel 1
-        ; [10] = D3D = 0 non 3-d mode
-        ; [9:4] = DAM[5:0] = 100100 no update s/d
-        ; [3:2] = DDS[1:0] = 01 Y memory destination
-        ; [1:0] = DSS[1:0] = 01 Y memory source
+        ; [10]    = D3D      = 0 non 3-d mode
+        ; [9:4]   = DAM[5:0] = 100100 no update s/d
+        ; [3:2]   = DDS[1:0] = 01 Y memory destination
+        ; [1:0]   = DSS[1:0] = 01 Y memory source
 
 ; For the sample rate of 40 KHz, this SRAM provides 4.37 seconds of delay time.
 ; (4.37 seconds = ((512 * 1024 words) / 3 bytes per sample) / 40000 samples/second)
 ; External Memory from: 0x200000 to: 0x27FFFF
 
-InitDMA:
-        move    #>$000000,x0
-        movep   x0,x:M_DCO0
-        movep   x0,x:M_DCO1
+rdfx    MACRO   REG,K
+        move    a,y:pacc
+        move    REG,x0
+        sub     x0,a
+        move    a,x0
+        move    #K,x1
+        move    REG,a
+        mac     x0,x1,a
 
-        move	#>(3*BufferSize-1),m0
+        move    a,x:Debug_Read_from_DSP_1
+        move    y:pacc,x0
+        sub     x0,a
+        move    a,x:Debug_Read_from_DSP_2
+        move    x:Debug_Read_from_DSP_1,a
+        ENDM
 
-        movep   #delayReadL,x:M_DDR0
-        movep   #delayWriteL,x:M_DSR1
+wrlx    MACRO   REG,K
+        move    a,REG
+        move    a,x0
+        move    y:pacc,a
+        sub     x0,a
+        move    x0,y:pacc
+        move    a,x0
+        move    #K,x1
+        move    y:pacc,a
+        mac     x0,x1,a
 
-        move    #Buffer,r0
-        rts
+        move    a,x:Debug_Read_from_DSP_3
+        move    y:pacc,x0
+        sub     x0,a
+        move    a,x:Debug_Read_from_DSP_4
+        move    x:Debug_Read_from_DSP_3,a
+        ENDM
 
-DelayL
-        ; DMA Read past sample
-        movep   r0,x:M_DSR0
+wrax    MACRO   REG,K
+        move    a,REG
+        move    a,x0
+        move    %K,x1
+        mpy     x0,x1,a
+        ENDM
+
+LowPassRC       MACRO   K
+        move    y:efil,x0
+        move    #K,x1
+        sub     x0,a
+        move    a,y1
+        mac     y1,x1,a
+        add     x0,a
+        move    a,y:efil
+
+        ;rdfx    y:efil,K
+        ;wrlx    y:efil,-1.0
+        ENDM
+
+ReadFromSRAM MACRO SRC
+        movep   SRC,x:M_DSR0
         nop
         nop
         jclr    #0,x:M_DSTR,*
@@ -442,60 +488,116 @@ DelayL
         nop
         jclr    #0,x:M_DSTR,*
 
-        ; Calculate Input + Delay
-        move    a,y0            ; Save input
+        ENDM
 
-        move    x:Knob_1,x0     ; Output = input * (1 - Knob_1) + delay * Knob_1
-        move    #1.0,a
-        sub     x0,a
-        move    a,x0
-        move    b,y1
-        mpy     x0,y1,a
-
-        move    x:Knob_1,x0
-        move    y:delayReadL,x1
-        mac     x0,x1,a
-        move    a,b             ; Save output
-
-        ; Calculate Input + Feedback
-        move    y0,a            ; Restore input
-        move    x:Knob_3,x0
-        move    y:delayReadL,y0
-        mac     x0,y0,a
-
-        move    a,y:delayWriteL
-
-        move    b,a            ; Restore output
-
-        ; DMA Write
-        movep   r0,x:M_DDR1
+WriteToSRAM  MACRO SRC
+        movep   SRC,x:M_DDR1
         nop
         nop
         jclr    #1,x:M_DSTR,*
+
         movep   #AccessSRAMWord1,x:M_DCR1
         nop
         nop
         jclr    #1,x:M_DSTR,*
 
-        move    x:Knob_2,x0
-        move    x0,x:Debug_Read_from_DSP_1
+        ENDM
 
-        move    #Buffer,b
-        move    #(3*BufferSize-1),x1
-        mac     x0,x1,b
+setup:
+        ; Init DMA
+        move    #>$000000,x0
+        movep   x0,x:M_DCO0
+        movep   x0,x:M_DCO1
+        movep   #Chan0IO,x:M_DDR0
+        movep   #Chan1IO,x:M_DSR1
 
-        move    b,x:Debug_Read_from_DSP_2
-        ;;move    b,m0
+        ; initiate Delay Buffer 
+        move    x0,y:Chan0IO
+        move    x0,y:Chan1IO
 
-        lua	(r0+3),r0
-        move    r0,x0
-        cmp     x0,b
-        jge     OK
+        move    #DelayBuffer,r0
+        move    #3,n0
+        move    #>$ffffff,m0
 
-        move    #Buffer,r0
-OK
-        move    r0,x:Debug_Read_from_DSP_3
+        move    #>BufferSize,b
 
+InitMemory
+        WriteToSRAM r0
+        lua     (r0)+n0,r0
+        sub     #>1,b
+        bne     InitMemory
+ 
+        move    #DelayBuffer,r0
         rts
 
+ComputeSampleL:
+        ; DMA Read past sample
+        ReadFromSRAM    r0
 
+        ; Calculate Input + Delay
+        move    a,y0            ; Save input
+
+        ; Calculate Input + Feedback
+        move    x:Knob_3,x0
+        move    y:Chan0IO,y1
+        mac     x0,y1,a
+
+        move    x:Switch_1,b
+        cmp     #>1,b
+        
+        jlt     dry
+
+        jeq     minus
+
+K2      equ     -0.24596643992295197
+
+        LowPassRC       K2
+
+minus:
+        LowPassRC       K2
+
+dry:    move    a,y:Chan1IO
+
+        ; DMA Write
+        WriteToSRAM     r0
+
+        move    x:Knob_1,x0     ; Output = input * (1 - Knob_1) + delay * Knob_1
+        move    #1.0,a
+        sub     x0,a
+        move    a,x0
+        mpy     x0,y0,a
+        move    a,x0
+        add     x0,a
+
+        move    x:Knob_1,x0
+        move    y:Chan0IO,x1
+        mpy     x0,x1,b
+        move    b,x0
+        add     x0,b
+        add     b,a
+
+        ; Calculate next address
+
+GetNextDelayIndex:
+        lua	(r0)+n0,r0
+
+        move    x:Knob_2,x0
+        move    x0,y:DelayPotValue
+
+        clr     b
+        move    #(3*BufferSize-1),x1
+        mac     x0,x1,b
+        add     #>DelayBuffer,b
+
+        move    r0,x0
+        cmp     x0,b
+        jge     GN1
+
+        move    #DelayBuffer,r0
+GN1:
+        move    r0,y:DelaySize
+        rts
+
+ComputeSampleR:
+        clr     a
+        rts
