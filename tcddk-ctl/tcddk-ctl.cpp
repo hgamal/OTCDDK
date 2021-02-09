@@ -1,7 +1,7 @@
 /*
     This file is part of OTCDDK.
 
-	Copyright © 2008-2018 Haroldo Gamal <haroldo@gamal.com.br>
+	Copyright ï¿½ 2008-2018 Haroldo Gamal <haroldo@gamal.com.br>
 	
     OTCDDK is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -65,6 +65,13 @@ void closeDevice(libusb_device_handle *dev_handle)
 		error("Cannot Release Interface");
 }
 
+uint32_t toHostLong(uint32_t x)
+{
+	return (x & 0xff0000ul >> 16) | 
+		   (x & 0x00ff00) |
+		   (x & 0x0000ff << 16 );
+}
+
 void monitorPedal(libusb_device_handle *dev_handle)
 {
 		unsigned char buf[24];
@@ -81,11 +88,13 @@ void monitorPedal(libusb_device_handle *dev_handle)
 				   "s0=%1d, s1=%1d, tb=%1d, bb=%1d, gl=%1d, rl=%1d, "
 				   "dbg0=%06x, dbg1=%06x, dbg2=%06x, dbg3=%06x"
 				   "\r",
-				s->pot0, s->pot1, s->pot2, s->pot3, s->pot5, s->pot5,
+				s->pot0, s->pot1, s->pot2, s->pot3, s->pot4, s->pot5,
 				s->switch0, s->switch1, s->topButton, s->bottonButton,
 				s->greeLed, s->redLed,
-				(uint32_t) s->debug0, (uint32_t) s->debug1, 
-				(uint32_t) s->debug2, (uint32_t)s->debug3
+				toHostLong((uint32_t) s->debug0),
+				toHostLong((uint32_t) s->debug1), 
+				toHostLong((uint32_t) s->debug2),
+				toHostLong((uint32_t)s->debug3)
 			);
 
 			putchar('\r');
