@@ -1,0 +1,9 @@
+archive
+dumps
+*.hex
+*.o
+*.cld
+*.cln
+*.lst
+*.tmp
+*.s
