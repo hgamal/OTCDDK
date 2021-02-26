@@ -2,15 +2,15 @@
 
 dos2unix < $1 | sed -e 's/^S1......//' -e 's/..$//' -e 's/^S[09].*$//' -e 's/../0x&, /g' > $1.tmp
 cat <<-EOF > $2
-	#include "typedef.h"
-	
+	#include <stdint.h>
+
 	/*
 	    This is the code that will be downloaded to the DSP.
 	    You can modify this constant based on the dumped file displayed by the GUI.
 	    Make sure you change the code size (first 3 bytes in the array)
 	*/
-	
-	const UINT8 DSP_Code[] @ 0xC000 = {
+        
+	const uint8_t DSP_Code[] = {
 EOF
 
 export SIZE=`wc -w $1.tmp | awk '{ print $1; }'`

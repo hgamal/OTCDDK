@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE eagle SYSTEM "eagle.dtd">
+<eagle>
+    <drawing>
+        <grid unitdist="mm" unit="mm"/>
+        <layers>
+            <layer name="Top" color="4" number="1" visible="yes" active="yes" fill="1"/>
+            <layer name="Bottom" color="4" number="16" visible="yes" active="yes" fill="1"/>
+            <layer name="tPlace" color="7" number="21" visible="yes" active="yes" fill="1"/>
+            <layer name="bPlace" color="7" number="22" visible="yes" active="yes" fill="1"/>
+            <layer name="tNames" color="7" number="25" visible="yes" active="yes" fill="1"/>
+            <layer name="bNames" color="7" number="26" visible="yes" active="yes" fill="1"/>
+            <layer name="tValues" color="7" number="27" visible="yes" active="yes" fill="1"/>
+            <layer name="bValues" color="7" number="28" visible="yes" active="yes" fill="1"/>
+            <layer name="tStop" color="7" number="29" visible="yes" active="yes" fill="1"/>
+            <layer name="bStop" color="7" number="30" visible="yes" active="yes" fill="1"/>
+            <layer name="tCream" color="7" number="31" visible="yes" active="yes" fill="1"/>
+            <layer name="bCream" color="7" number="32" visible="yes" active="yes" fill="1"/>
+            <layer name="tKeepout" color="4" number="39" visible="yes" active="yes" fill="1"/>
+            <layer name="bKeepout" color="4" number="40" visible="yes" active="yes" fill="1"/>
+            <layer name="tRestrict" color="0" number="41" visible="yes" active="yes" fill="1"/>
+            <layer name="bRestrict" color="0" number="42" visible="yes" active="yes" fill="1"/>
+            <layer name="tDocu" color="7" number="51" visible="yes" active="yes" fill="1"/>
+            <layer name="bDocu" color="7" number="52" visible="yes" active="yes" fill="1"/>
+            <layer name="Nets" color="2" number="91" visible="yes" active="yes" fill="1"/>
+            <layer name="Busses" color="1" number="92" visible="yes" active="yes" fill="1"/>
+            <layer name="Pins" color="2" number="93" visible="yes" active="yes" fill="1"/>
+            <layer name="Symbols" color="4" number="94" visible="yes" active="yes" fill="1"/>
+            <layer name="Names" color="7" number="95" visible="yes" active="yes" fill="1"/>
+            <layer name="Values" color="7" number="96" visible="yes" active="yes" fill="1"/>
+            <layer name="Info" color="7" number="97" visible="yes" active="yes" fill="1"/>
+            <layer name="Guide" color="6" number="98" visible="yes" active="yes" fill="1"/>
+        </layers>
+        <library name="Upverter Library">
+            <description>Upverter Parts Library
+
+Created by Upverter.com</description>
+            <packages>
+                <package name="ALPS_ELECTRIC_CO.,_LTD._RK09K1130C94_0">
+                    <description>100 KΩ Potentiometer, Vertical, Through Hole</description>
+                    <wire layer="51" y2="5.5" width="0.15" x2="-4.9" y1="-5.5" x1="-4.9"/>
+                    <wire layer="51" y2="5.5" width="0.15" x2="4.9" y1="5.5" x1="-4.9"/>
+                    <wire layer="51" y2="-5.5" width="0.15" x2="4.9" y1="5.5" x1="4.9"/>
+                    <wire layer="51" y2="-5.5" width="0.15" x2="-4.9" y1="-5.5" x1="4.9"/>
+                    <wire layer="39" y2="5.7" width="0.1" x2="-5.725" y1="-7.925" x1="-5.725"/>
+                    <wire layer="39" y2="5.7" width="0.1" x2="5.725" y1="5.7" x1="-5.725"/>
+                    <wire layer="39" y2="-7.925" width="0.1" x2="5.725" y1="5.7" x1="5.725"/>
+                    <wire layer="39" y2="-7.925" width="0.1" x2="-5.725" y1="-7.925" x1="5.725"/>
+                    <wire layer="21" y2="5.7" width="0.15" x2="-5.725" y1="-7.925" x1="-5.725"/>
+                    <wire layer="21" y2="5.7" width="0.15" x2="5.725" y1="5.7" x1="-5.725"/>
+                    <wire layer="21" y2="-7.925" width="0.15" x2="5.725" y1="5.7" x1="5.725"/>
+                    <wire layer="21" y2="-7.925" width="0.15" x2="-5.725" y1="-7.925" x1="5.725"/>
+                    <text layer="25" align="bottom-left" y="5.95" x="-5.725" rot="R0" size="1.0">&gt;NAME</text>
+                    <circle y="-8.6" x="-2.275" layer="21" radius="0.25" width="0.0"/>
+                    <pad diameter="0.0" name="5" shape="long" drill="0.0" y="0.0" x="4.4" rot="R90"/>
+                    <pad diameter="0.0" name="4" shape="long" drill="0.0" y="0.0" x="-4.4" rot="R90"/>
+                    <pad diameter="1.6" name="1" shape="square" drill="1.0" y="-7.0" x="-2.5" rot="R90"/>
+                    <pad diameter="1.6" name="2" shape="round" drill="1.0" y="-7.0" x="0.0" rot="R90"/>
+                    <pad diameter="1.6" name="3" shape="round" drill="1.0" y="-7.0" x="2.5" rot="R90"/>
+                </package>
+            </packages>
+            <symbols>
+                <symbol name="ALPS_ELECTRIC_CO.,_LTD._RK09K1130C94_0_0">
+                    <description>100 KΩ Potentiometer, Vertical, Through Hole</description>
+                    <wire layer="94" y2="-6.35" width="0.508" x2="3.302" y1="-7.62" x1="2.54"/>
+                    <wire layer="94" y2="-8.89" width="0.508" x2="4.572" y1="-6.35" x1="3.302"/>
+                    <wire layer="94" y2="-6.35" width="0.508" x2="5.842" y1="-8.89" x1="4.572"/>
+                    <wire layer="94" y2="-8.89" width="0.508" x2="7.112" y1="-6.35" x1="5.842"/>
+                    <wire layer="94" y2="-6.35" width="0.508" x2="8.382" y1="-8.89" x1="7.112"/>
+                    <wire layer="94" y2="-8.89" width="0.508" x2="9.652" y1="-6.35" x1="8.382"/>
+                    <wire layer="94" y2="-7.62" width="0.508" x2="10.16" y1="-8.89" x1="9.652"/>
+                    <wire layer="94" y2="-10.668" width="0.508" x2="6.35" y1="-8.89" x1="7.62"/>
+                    <wire layer="94" y2="-10.668" width="0.508" x2="8.89" y1="-8.89" x1="7.62"/>
+                    <wire layer="94" y2="-5.08" width="0.508" x2="0.0" y1="-15.24" x1="0.0"/>
+                    <wire layer="94" y2="-5.08" width="0.508" x2="15.24" y1="-5.08" x1="0.0"/>
+                    <wire layer="94" y2="-15.24" width="0.508" x2="15.24" y1="-5.08" x1="15.24"/>
+                    <wire layer="94" y2="-15.24" width="0.508" x2="0.0" y1="-15.24" x1="15.24"/>
+                    <wire layer="94" y2="-7.62" width="0.508" x2="15.24" y1="-7.62" x1="10.16"/>
+                    <wire layer="94" y2="-9.398" width="0.508" x2="7.62" y1="-11.43" x1="7.62"/>
+                    <wire layer="94" y2="-15.24" width="0.508" x2="7.62" y1="-10.16" x1="7.62"/>
+                    <wire layer="94" y2="-7.62" width="0.508" x2="2.54" y1="-7.62" x1="0.0"/>
+                    <wire layer="94" y2="-7.62" width="0.15" x2="0.0" y1="-7.62" x1="0.0"/>
+                    <wire layer="94" y2="-7.62" width="0.15" x2="15.24" y1="-7.62" x1="15.24"/>
+                    <wire layer="94" y2="-13.97" width="0.15" x2="7.62" y1="-15.24" x1="7.62"/>
+                    <wire layer="94" y2="-12.7" width="0.15" x2="0.0" y1="-12.7" x1="0.0"/>
+                    <wire layer="94" y2="-12.7" width="0.15" x2="15.24" y1="-12.7" x1="15.24"/>
+                    <text layer="95" align="top-left" y="0.0" x="0.0" rot="R0" size="2.54">&gt;NAME</text>
+                    <text layer="95" align="top-left" y="-20.32" x="-2.54" rot="R0" size="2.54">RK09K1130C94</text>
+                    <pin name="1" visible="pad" length="middle" y="-7.62" x="-5.08"/>
+                    <pin name="3" visible="pad" length="middle" y="-7.62" x="20.32" rot="R180"/>
+                    <pin name="2" visible="pad" length="middle" y="-20.32" x="7.62" rot="R90"/>
+                    <pin name="MT1" visible="pad" length="middle" y="-12.7" x="-5.08"/>
+                    <pin name="MT2" visible="pad" length="middle" y="-12.7" x="20.32" rot="R180"/>
+                </symbol>
+            </symbols>
+            <devicesets>
+                <deviceset prefix="R" name="ALPS_ELECTRIC_CO.,_LTD._RK09K1130C94">
+                    <description>100 KΩ Potentiometer, Vertical, Through Hole</description>
+                    <gates>
+                        <gate name="G$0" symbol="ALPS_ELECTRIC_CO.,_LTD._RK09K1130C94_0_0" x="0"/>
+                    </gates>
+                    <devices>
+                        <device name="ALPS_ELECTRIC_CO.,_LTD._RK09K1130C94_0_0" package="ALPS_ELECTRIC_CO.,_LTD._RK09K1130C94_0">
+                            <connects>
+                                <connect gate="G$0" pad="1" pin="1"/>
+                                <connect gate="G$0" pad="2" pin="2"/>
+                                <connect gate="G$0" pad="3" pin="3"/>
+                                <connect gate="G$0" pad="4" pin="MT1"/>
+                                <connect gate="G$0" pad="5" pin="MT2"/>
+                            </connects>
+                            <technologies>
+                                <technology>
+                                    <attribute name="power_rating" value="50 mW"/>
+                                    <attribute name="voltage_rating_dc" value="20 V"/>
+                                    <attribute name="MPN" value="RK09K1130C94"/>
+                                    <attribute name="reach_svhc_compliance" value="No SVHC"/>
+                                    <attribute name="prefix" value="R"/>
+                                    <attribute name="resistance" value="100kΩ"/>
+                                    <attribute name="datasheet" value="http://www.farnell.com/datasheets/1718712.pdf"/>
+                                    <attribute name="imported_from" value="octopart"/>
+                                    <attribute name="mounting_type" value="through hole"/>
+                                    <attribute name="octopart_part_number" value="4145893953c29e82"/>
+                                    <attribute name="num_pins" value="3"/>
+                                    <attribute name="MF" value="ALPS Electric Co., Ltd."/>
+                                </technology>
+                            </technologies>
+                        </device>
+                    </devices>
+                </deviceset>
+            </devicesets>
+        </library>
+    </drawing>
+</eagle>
