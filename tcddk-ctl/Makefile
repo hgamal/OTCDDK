@@ -12,3 +12,6 @@ tcddk-ctl: main.cpp tcddk-ctl.cpp tcddk-api.cpp
 
 clean:
 	rm tcddk-ctl
+
+install: tcddk-ctl
+	cp tcddk-ctl ../bin
