@@ -16,11 +16,19 @@ TARGET ?= $(PROJ)-DSPCode.c
 all:	$(TARGET)
 
 clean:
-	-rm $(OBJS)
-	-rm $(LSTS)
-	-rm $(PROJ).cld
-	-rm $(PROJ).s
-	-rm $(PROJ)-DSPCode.c
+	rm -f $(OBJS)
+	rm -f $(LSTS)
+	rm -f $(PROJ).cld
+	rm -f $(PROJ).s
+	rm -f $(PROJ)-DSPCode.c
+	rm -f $(PROJ).hex
+
+test:	$(PROJ).hex
+	../../bin/tcddk-ctl upload_dsp $(PROJ).hex
+	../../bin/tcddk-ctl monitor
+
+$(PROJ).hex:	$(OBJS) $(PROJ).cld
+	../../bin/cld2hex $(PROJ).cld
 
 $(PROJ).cld:	$(OBJS)
 	$(BPATH)dsplnk.exe   -G -B"$(PROJ).cld" $^
