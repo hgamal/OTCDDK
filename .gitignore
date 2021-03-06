@@ -7,3 +7,4 @@ dumps
 *.lst
 *.tmp
 *.s
+*.*#*
