@@ -40,5 +40,7 @@ uint16_t start_readChannel(uint8_t ch)
 	while(!ADC_isComplete());
 
 	ADC_read();
+    
+    return 0;
 }
 

@@ -4,7 +4,7 @@
 
 void USART_Init()
 {
-	UCSRA |= (1<<U2X);
+	UCSR1A |= (1<<U2X1);
 
 	//unsigned long ubrr = F_CPU / (baud * 16) - 1;
 	// See: 
@@ -15,22 +15,22 @@ void USART_Init()
 	unsigned int ubrr = 12;	
 
 	/* Set baud rate */
-	UBRRH = (unsigned char)(ubrr>>8);
-	UBRRL = (unsigned char) ubrr;
+	UBRR1H = (unsigned char)(ubrr>>8);
+	UBRR1L = (unsigned char) ubrr;
 
 	/* Enable transmitter */
-	UCSRB = (1<<TXEN);
+	UCSR1B = (1<<TXEN1);
 
 	/* Set frame format: 8data, 1stop bit */
-	UCSRC = (1<<URSEL)|(3<<UCSZ0);
+	UCSR1C = (1<<UMSEL10)|(3<<UCSZ10);
 }
 
 void USART_Transmit(unsigned int data)
 {
 	/* Wait for empty transmit buffer */
-	while (!( UCSRA & (1<<UDRE)))
+	while (!( UCSR1A & (1<<UDRE1)))
 		;
 
 	/* Put data into buffer, sends the data */
-	UDR = data;
+	UDR1 = data;
 }

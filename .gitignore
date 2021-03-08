@@ -8,3 +8,5 @@ dumps
 *.tmp
 *.s
 *.*#*
+/avr-code/build/
+/avr-code/dist/

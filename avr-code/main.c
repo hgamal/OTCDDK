@@ -18,6 +18,30 @@ uint16_t EEMEM  eeprom_pot[4];
 
 int main (void)
 {
+    PLLCSR = _BV(PLLE);
+
+    while (PLLCSR & _BV(PLOCK) != 1);
+
+    PLLFRQ = _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2);
+
+    TCCR4A = _BV(COM4A0);
+    TCCR4B = _BV(CS40);
+    TCCR4D = 0;
+
+    TC4H   = 0;
+    OCR4C  = 2;
+
+    DDRD = _BV(PD5) | _BV(PD6);
+           
+    while (1) {
+            PORTD = _BV(PD5);
+            _delay_ms(1000);
+            PORTD = _BV(PD6);
+            _delay_ms(1000);
+            PORTD &= ~_BV(PD6);
+            _delay_ms(1000);
+    }
+
 	DEBUG_init();
 	SPI_setup();
 
@@ -26,7 +50,7 @@ int main (void)
 
 	uint16_t pot[8] = { 0 };
 
-	DDRC |= _BV(PC1) |_BV(PC0);
+	DDRC |= _BV(PC7) |_BV(PC6);
 
 	DDRD &= ~(_BV(PD2) | _BV(PD3));
 	DDRD &= ~_BV(PD0);
@@ -75,12 +99,12 @@ int main (void)
 				state_dd2 = !state_dd2;
 				if (state_dd2) {
 					DEBUG_msg("\r\nDD2=ON\r\n");
-					PORTC |= _BV(PORTC0);
-					PORTD &= ~_BV(PORTD0);
+					PORTC |= _BV(PORTC6);
+					PORTD &= ~_BV(PORTD6);
 				} else {
 					DEBUG_msg("\r\nDD2=OFF\r\n");
-					PORTC &= ~_BV(PORTC0);
-					PORTD |= _BV(PORTD0);
+					PORTC &= ~_BV(PORTC6);
+					PORTD |= _BV(PORTD6);
 				}
 			}
 		}
@@ -95,10 +119,10 @@ int main (void)
 				state_dd3 = !state_dd3;
 				if (state_dd3) {
 					DEBUG_msg("\r\nDD3=ON\r\n");
-					PORTC &= ~_BV(PORTC1);
+					PORTC &= ~_BV(PORTC7);
 				} else {
 					DEBUG_msg("\r\nDD3=OFF\r\n");
-					PORTC |= _BV(PORTC1);
+					PORTC |= _BV(PORTC7);
 				}
 			}
 		}
