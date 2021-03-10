@@ -36,7 +36,7 @@ program: $(TARGET)
 	avrdude ${PGMOPT} -U flash:w:$(TARGET):i
 
 dfu: $(TARGET)
-	dfu-programmer $(MCU) erase
+	dfu-programmer $(MCU) erase --force
 	dfu-programmer $(MCU) flash $(TARGET)
 	#dfu-programmer $(MCU) reset
 

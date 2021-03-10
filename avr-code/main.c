@@ -22,15 +22,16 @@ int main (void)
 
     while (PLLCSR & _BV(PLOCK) != 1);
 
-    PLLFRQ = _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2);
+    PLLFRQ = 0; // _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2);
 
-    TCCR4A = _BV(COM4A0);
+    TCCR4A = _BV(COM4A0) | _BV(FOC4A);
     TCCR4B = _BV(CS40);
     TCCR4D = 0;
 
     TC4H   = 0;
     OCR4C  = 2;
 
+    DDRC = _BV(PC7);
     DDRD = _BV(PD5) | _BV(PD6);
            
     while (1) {
