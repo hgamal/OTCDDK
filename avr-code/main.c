@@ -18,29 +18,41 @@ uint16_t EEMEM  eeprom_pot[4];
 
 int main (void)
 {
+	CLKPR = _BV(CLKPCE);
+	CLKPR = 0;
+
     PLLCSR = _BV(PLLE);
 
     while (PLLCSR & _BV(PLOCK) != 1);
 
-    PLLFRQ = 0; // _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2);
+    PLLFRQ = _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2);
 
     TCCR4A = _BV(COM4A0) | _BV(FOC4A);
     TCCR4B = _BV(CS40);
     TCCR4D = 0;
 
     TC4H   = 0;
-    OCR4C  = 2;
+    OCR4A  = 0;
+	OCR4C  = 2;
+
+	// F = 
 
     DDRC = _BV(PC7);
+
     DDRD = _BV(PD5) | _BV(PD6);
+	DDRE &= ~_BV(PE2);
            
     while (1) {
-            PORTD = _BV(PD5);
-            _delay_ms(1000);
-            PORTD = _BV(PD6);
-            _delay_ms(1000);
-            PORTD &= ~_BV(PD6);
-            _delay_ms(1000);
+		if ((PINE & _BV(PE2)) == 0) {
+			PORTD = 0;
+			continue;
+		}
+		PORTD = _BV(PD5);
+		_delay_ms(1000);
+		PORTD = _BV(PD6);
+		_delay_ms(1000);
+		PORTD &= ~_BV(PD6);
+		_delay_ms(1000);
     }
 
 	DEBUG_init();

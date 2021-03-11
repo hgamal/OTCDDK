@@ -4,7 +4,7 @@
 
 # default FUSE   -U lfuse:w:0x5e:m -U hfuse:w:0x99:m -U efuse:w:0xf3:m 
 
-CCOPTS=-Os -DF_CPU=1000000UL -mmcu=atmega32u4 -DXDEBUG -I ../common
+CCOPTS=-Os -DF_CPU=8000000UL -mmcu=atmega32u4 -DXDEBUG -I ../common
 
 PGMOPT=-B8 -v -pm32u4 -c usbasp -U efuse:w:0xc7:m
 
