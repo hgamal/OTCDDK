@@ -25,7 +25,8 @@ int main (void)
 
     while (PLLCSR & _BV(PLOCK) != 1);
 
-    PLLFRQ = _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2);
+    // PLLFRQ = _BV(PLLTM0) | _BV(PDIV2); // FCLKt4 = 48 MHz
+	PLLFRQ = _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2); // FCLKt4 = 24 MHz
 
     TCCR4A = _BV(COM4A0) | _BV(FOC4A);
     TCCR4B = _BV(CS40);
@@ -33,9 +34,9 @@ int main (void)
 
     TC4H   = 0;
     OCR4A  = 0;
-	OCR4C  = 2;
+	OCR4C  = 3;
 
-	// F = 
+	// F = FCLKt4 / ( 2 * (OCR4C + 1))
 
     DDRC = _BV(PC7);
 
