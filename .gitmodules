@@ -1,0 +1,3 @@
+[submodule "avr-code/lufa"]
+	path = avr-code/lufa
+	url = https://github.com/abcminiuser/lufa
