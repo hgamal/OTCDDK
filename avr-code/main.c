@@ -7,7 +7,7 @@
 #include <util/delay.h>
 #include <avr/eeprom.h>
 
-#include "Descriptors.h"
+#include "descriptors.h"
 
 #include <LUFA/Drivers/Board/LEDs.h>
 #include <LUFA/Drivers/Board/Joystick.h>
@@ -93,7 +93,7 @@ int main (void)
 
 		if (connected) {
 			/* Write the string to the virtual COM port via the created character stream */
-			fprintf(&USBSerialStream, "%d\r", counter++);
+			fprintf(&USBSerialStream, "%ld\r", counter++);
 
 			/* Alternatively, without the stream: */
 			// CDC_Device_SendString(&VirtualSerial_CDC_Interface, ReportString);
@@ -109,7 +109,6 @@ int main (void)
 	DEBUG_init();
 	SPI_setup();
 
-	uint16_t delay=1000, oldDelay=1000, currTime=1000;
 	uint8_t state_dd2=0, state_dd3=0;
 
 	uint16_t pot[8] = { 0 };
@@ -126,7 +125,7 @@ int main (void)
 	uint16_t value;
 	ADC_start(pt_index);
 
-	extern const uint8_t DSP_Code[];
+	// extern const uint8_t DSP_Code[];
 
 	// DSP_init(DSP_Code, NULL, NULL);
 
@@ -203,7 +202,7 @@ void SetupHardware(void)
 
     PLLCSR = _BV(PLLE);
 
-    while (PLLCSR & _BV(PLOCK) != 1);
+    while ((PLLCSR & _BV(PLOCK)) != 1);
 
     PLLFRQ = _BV(PLLTM0) | _BV(PDIV2); // FCLKt4 = 48 MHz
 	//PLLFRQ = _BV(PLLTM1) | _BV(PLLTM0) | _BV(PDIV2); // FCLKt4 = 24 MHz
