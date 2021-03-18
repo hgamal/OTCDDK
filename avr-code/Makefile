@@ -4,44 +4,68 @@
 
 # default FUSE   -U lfuse:w:0x5e:m -U hfuse:w:0x99:m -U efuse:w:0xf3:m 
 
-CCOPTS=-Os -DF_CPU=8000000UL -mmcu=atmega32u4 -DXDEBUG -I ../common
+MCU          = atmega32u4
+ARCH         = AVR8
+BOARD        = USBKEY
+F_CPU        = 8000000
+F_USB        = $(F_CPU)
+OPTIMIZATION = s
+TARGET       = mcu_code
+SOURCES      = main.c  # adc.c debug.c dsp.c spi.c usart.c
+SRC          = $(SOURCES).c Descriptors.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
+LUFA_PATH    = lufa/LUFA
+CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
+LD_FLAGS     =
 
+# Include LUFA-specific DMBS extension modules
+CCOPTS=-Os -DF_CPU=8000000UL -mmcu=atmega32u4 -DXDEBUG -I ../common
 PGMOPT=-B8 -v -pm32u4 -c usbasp -U efuse:w:0xc7:m
 
-MCU=atmega32u4
+# TARGET=mcu-code.hex
 
-TARGET=mcu-code.hex
+all: # ${TARGET}
 
-all: ${TARGET}
+#OBJS = $(SOURCES:.c=.o)
 
-SOURCES = main.c  # adc.c debug.c dsp.c spi.c usart.c
+#ELF = $(basename $(TARGET)).elf
 
-OBJS = $(SOURCES:.c=.o)
+#.c.o:
+#	avr-gcc ${CCOPTS} -o $@ -c $<
 
-ELF = $(basename $(TARGET)).elf
+#$(TARGET):	$(ELF)
+#	avr-objcopy -O ihex -R .eeprom $^ $@
 
-.c.o:
-	avr-gcc ${CCOPTS} -o $@ -c $<
+#$(ELF):	${OBJS}
+#	avr-gcc ${CCOPTS} -Wl,-Map,$(basename $@).map -o $@ $^
 
-$(TARGET):	$(ELF)
-	avr-objcopy -O ihex -R .eeprom $^ $@
+#status:
+#	avrdude ${PGMOPT}
 
-$(ELF):	${OBJS}
-	avr-gcc ${CCOPTS} -Wl,-Map,$(basename $@).map -o $@ $^
+#program: $(TARGET)
+#	avrdude ${PGMOPT} -U flash:w:$(TARGET):i
 
-status:
-	avrdude ${PGMOPT}
-
-program: $(TARGET)
-	avrdude ${PGMOPT} -U flash:w:$(TARGET):i
-
-dfu: $(TARGET)
-	dfu-programmer $(MCU) erase --force
-	dfu-programmer $(MCU) flash $(TARGET)
+#dfu: $(TARGET)
+#	dfu-programmer $(MCU) erase --force
+#	dfu-programmer $(MCU) flash $(TARGET)
 	#dfu-programmer $(MCU) reset
 
-pgmread:
-	avrdude ${PGMOPT} -U flash:r:read.hex:i
+#pgmread:
+#	avrdude ${PGMOPT} -U flash:r:read.hex:i
 
-clean:
-	-rm *.map  ${OBJS} $(ELF) ${TARGET}
+#clean:
+#	-rm *.map  ${OBJS} $(ELF) ${TARGET}
+
+DMBS_LUFA_PATH ?= $(LUFA_PATH)/Build/LUFA
+include $(DMBS_LUFA_PATH)/lufa-sources.mk
+include $(DMBS_LUFA_PATH)/lufa-gcc.mk
+
+# Include common DMBS build system modules
+DMBS_PATH      ?= $(LUFA_PATH)/Build/DMBS/DMBS
+include $(DMBS_PATH)/core.mk
+include $(DMBS_PATH)/cppcheck.mk
+include $(DMBS_PATH)/doxygen.mk
+include $(DMBS_PATH)/dfu.mk
+include $(DMBS_PATH)/gcc.mk
+include $(DMBS_PATH)/hid.mk
+include $(DMBS_PATH)/avrdude.mk
+include $(DMBS_PATH)/atprogram.mk
